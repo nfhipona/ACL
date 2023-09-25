@@ -1,0 +1,31 @@
+{
+  "name": "acl",
+  "version": "0.0.1",
+  "description": "Access Control List for NodeJs server.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha --timeout 150000 --reporter mochawesome",
+    "build": "tsc",
+    "tslint": "tslint --project .",
+    "start": "rm -rf lib/ && tsc && node lib/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nfhipona/ACL.git"
+  },
+  "keywords": [
+    "acl",
+    "access",
+    "control",
+    "list",
+    "nodejs",
+    "javascript",
+    "back-end"
+  ],
+  "author": "Neil Francis Ramirez Hipona",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nfhipona/ACL/issues"
+  },
+  "homepage": "https://github.com/nfhipona/ACL#readme"
+}

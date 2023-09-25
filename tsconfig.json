@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "module": "ESNext",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "target": "ESNext",
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "lib",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*"
+            ]
+        },
+        "strict": true
+    },
+    "include": [
+        "src/**/*",
+        "index.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
