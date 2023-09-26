@@ -57,7 +57,7 @@ DROP TABLE IF EXISTS `acl_permission`;
 CREATE TABLE `acl_permission` (
     `role_id` binary(16) NOT NULL,
     `resource_id` binary(16) NOT NULL,
-    `acl_access_type_id` binary(16) NOT NULL,
+    `access_type_id` binary(16) NOT NULL,
 
     `is_disabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'No entry means access disabled',
 
@@ -67,5 +67,5 @@ CREATE TABLE `acl_permission` (
     CONSTRAINT `acl_permission_u_key` UNIQUE (`role_id`, `resource_id`),
     CONSTRAINT `acl_permission_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE,
     CONSTRAINT `acl_permission_resource_id_fk` FOREIGN KEY (`resource_id`) REFERENCES `resource` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `acl_permission_acl_access_type_id_fk` FOREIGN KEY (`acl_access_type_id`) REFERENCES `acl_access_type` (`id`) ON DELETE CASCADE
+    CONSTRAINT `acl_permission_access_type_id_fk` FOREIGN KEY (`access_type_id`) REFERENCES `access_type_id` (`id`) ON DELETE CASCADE
 );
