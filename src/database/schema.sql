@@ -36,18 +36,18 @@ CREATE TABLE `acl_resource` (
 --
 -- Table structure for table `mode`
 --
-DROP TABLE IF EXISTS `acl_mode`;
-CREATE TABLE `acl_mode` (
+DROP TABLE IF EXISTS `acl_access_type`;
+CREATE TABLE `acl_access_type` (
     `id` binary(16) NOT NULL,
-    `code` varchar(5) NOT NULL COMMENT 'ex: +r, +w, +d',
-    `description` varchar(255) NULL,
+    `code` varchar(5) NOT NULL COMMENT 'ex: +r, +rw, +rwd',
+    `description` varchar(255) NULL COMMENT 'ex: Read, Read & Write, Full Access',
 
     `deleted` tinyint(1) NOT NULL DEFAULT 0,
     `updatedAt` timestamp NOT NULL DEFAULT CURRENt_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT `acl_mode_id_pk` PRIMARY KEY (`id`),
-    CONSTRAINT `acl_mode_code_u_key` UNIQUE (`code`)
+    CONSTRAINT `acl_access_type_id_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `acl_access_type_code_u_key` UNIQUE (`code`)
 );
 
 --
@@ -57,14 +57,15 @@ DROP TABLE IF EXISTS `acl_permission`;
 CREATE TABLE `acl_permission` (
     `role_id` binary(16) NOT NULL,
     `resource_id` binary(16) NOT NULL,
-    `mode` varchar(5) NOT NULL COMMENT 'refer to acl_mode.code',
+    `acl_access_type_id` binary(16) NOT NULL,
 
     `is_disabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'No entry means access disabled',
 
     `updatedAt` timestamp NOT NULL DEFAULT CURRENt_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT `acl_permission_u_key` UNIQUE (`role_id`, `resource_id`, `mode`),
+    CONSTRAINT `acl_permission_u_key` UNIQUE (`role_id`, `resource_id`),
     CONSTRAINT `acl_permission_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `acl_permission_resource_id_fk` FOREIGN KEY (`resource_id`) REFERENCES `resource` (`id`) ON DELETE CASCADE
+    CONSTRAINT `acl_permission_resource_id_fk` FOREIGN KEY (`resource_id`) REFERENCES `resource` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `acl_permission_acl_access_type_id_fk` FOREIGN KEY (`acl_access_type_id`) REFERENCES `acl_access_type` (`id`) ON DELETE CASCADE
 );
