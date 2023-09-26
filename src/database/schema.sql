@@ -34,7 +34,7 @@ CREATE TABLE `acl_resource` (
 );
 
 --
--- Table structure for table `mode`
+-- Table structure for table `access type` code
 --
 DROP TABLE IF EXISTS `acl_access_type`;
 CREATE TABLE `acl_access_type` (
@@ -42,7 +42,6 @@ CREATE TABLE `acl_access_type` (
     `code` varchar(5) NOT NULL COMMENT 'ex: +r, +rw, +rwd',
     `description` varchar(255) NULL COMMENT 'ex: Read, Read & Write, Full Access',
 
-    `deleted` tinyint(1) NOT NULL DEFAULT 0,
     `updatedAt` timestamp NOT NULL DEFAULT CURRENt_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -65,7 +64,7 @@ CREATE TABLE `acl_permission` (
     `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT `acl_permission_u_key` UNIQUE (`role_id`, `resource_id`),
-    CONSTRAINT `acl_permission_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `acl_permission_resource_id_fk` FOREIGN KEY (`resource_id`) REFERENCES `resource` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `acl_permission_access_type_id_fk` FOREIGN KEY (`access_type_id`) REFERENCES `access_type_id` (`id`) ON DELETE CASCADE
+    CONSTRAINT `acl_permission_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `acl_role` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `acl_permission_resource_id_fk` FOREIGN KEY (`resource_id`) REFERENCES `acl_resource` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `acl_permission_access_type_id_fk` FOREIGN KEY (`access_type_id`) REFERENCES `acl_access_type` (`id`) ON DELETE CASCADE
 );
