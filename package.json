@@ -27,5 +27,11 @@
   "bugs": {
     "url": "https://github.com/nfhipona/ACL/issues"
   },
-  "homepage": "https://github.com/nfhipona/ACL#readme"
+  "homepage": "https://github.com/nfhipona/ACL#readme",
+  "devDependencies": {
+    "@types/mysql": "^2.15.22"
+  },
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
 }
