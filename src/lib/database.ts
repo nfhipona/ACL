@@ -1,28 +1,31 @@
-import mysql, { Pool, PoolConnection } from 'mysql';
+import mysql, {
+    Pool,
+    PoolConnection,
+    QueryOptions,
+    queryCallback,
+    MysqlError,
+    FieldInfo
+} from 'mysql';
+import { Database, DatabaseConfig, Callback } from './interface';
 
-export interface DatabaseConfig {
-    connectionLimit: number,
-    host: string,
-    user: string,
-    password: string,
-    database: string
-}
+export class MyDatabase implements Database {
+    pool: Pool
+    constructor(settings: DatabaseConfig) {
+        this.pool = mysql.createPool(settings);
+    }
 
-export default function (DatabaseSettings: DatabaseConfig) {
-    const pool: Pool = mysql.createPool(DatabaseSettings);
-
-    const connection = async (): Promise<PoolConnection> => {
+    async connection(): Promise<PoolConnection> {
         return new Promise((resolve, reject) => {
-            pool.getConnection((err, conn) => {
+            this.pool.getConnection((err, conn) => {
                 if (err) return reject(err);
                 resolve(conn);
             });
         });
     }
 
-    const transaction = async (): Promise<PoolConnection> => {
+    async transaction(): Promise<PoolConnection> {
         return new Promise((resolve, reject) => {
-            pool.getConnection((err, conn) => {
+            this.pool.getConnection((err, conn) => {
                 if (err) return reject(err);
                 conn.beginTransaction(err => {
                     if (err) return reject(err);
@@ -32,7 +35,7 @@ export default function (DatabaseSettings: DatabaseConfig) {
         });
     }
 
-    const rollback = async (conn: PoolConnection): Promise<void> => {
+    async rollback(conn: PoolConnection): Promise<void> {
         return new Promise((resolve, _) => {
             conn.rollback(() => {
                 conn.destroy();
@@ -41,14 +44,12 @@ export default function (DatabaseSettings: DatabaseConfig) {
         });
     }
 
-    const commit = async (conn: PoolConnection): Promise<void> => {
+    async commit(conn: PoolConnection): Promise<void> {
         return new Promise((resolve, reject) => {
-            conn.commit(err => {
+            conn.commit(async err => {
                 if (err) {
-                    rollback(conn)
-                        .then(() => {
-                            reject(err);
-                        });
+                    await this.rollback(conn);
+                    reject(err);
                 } else {
                     conn.destroy();
                     resolve();
@@ -57,11 +58,14 @@ export default function (DatabaseSettings: DatabaseConfig) {
         });
     }
 
-    return {
-        pool,
-        connection,
-        transaction,
-        rollback,
-        commit
+    async query(conn: PoolConnection, q: string | QueryOptions, values: any): Promise<Callback> {
+        return new Promise((resolve, reject) => {
+            conn.query(q, values, (err: MysqlError | null, results?: any, fields?: FieldInfo[]) => {
+                if (err) return reject(err);
+                resolve({ results, fields });
+            })
+        });
     }
 }
+
+export const myDB = (settings: DatabaseConfig) => new MyDatabase(settings);
